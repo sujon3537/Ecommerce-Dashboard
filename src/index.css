@@ -1,0 +1,8 @@
+.rdw-editor-toolbar {
+  border-color: #d9d9d9;
+}
+.rdw-editor-main {
+  border: 1px solid #d9d9d9;
+  min-height: 300px;
+  max-height: 300px;
+}
