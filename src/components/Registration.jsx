@@ -2,8 +2,10 @@ import { PlusOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { Alert, Button, Card, Form, Input, Upload, Spin } from "antd";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Registration = () => {
+  const navigate = useNavigate();
   let [error, setError] = useState("");
   let [success, setSuccess] = useState("");
   let [spinner, setSpinner] = useState(false);
@@ -39,6 +41,7 @@ const Registration = () => {
       setSpinner(false);
       setError("");
       setSuccess(data.data.success);
+      navigate(`/otp/${data.data.email}`);
     }
   };
   const normFile = (e) => {
