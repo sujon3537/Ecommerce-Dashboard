@@ -1,42 +1,38 @@
 import React, { useState } from "react";
 import { Alert, Button, Card, Form, Input, Spin } from "antd";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
-
-const Login = () => {
+const ResetPassword = () => {
   let [error, setError] = useState("");
   let [success, setSuccess] = useState("");
   let [spinner, setSpinner] = useState(false);
-  let [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
+  let [newPassword, setNewPassword] = useState("");
+  let [searchParams, setSearchParams] = useSearchParams();
+  let navigate = useNavigate();
 
-  const handleFormData = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
-  };
-  const handleLoginSubmit = async () => {
+  const handleSubmit = async () => {
     setSpinner(true);
-    const data = await axios.post("http://localhost:8000/api/v1/auth/login", {
-      email: loginData.email,
-      password: loginData.password,
-    });
+    const data = await axios.post(
+      "http://localhost:8000/api/v1/auth/resetpassword",
+      {
+        email: searchParams.get("email"),
+        newPassword: newPassword,
+      }
+    );
     if (data.data.error) {
       setSpinner(false);
       setError(data.data.error);
       console.log(data.data.error);
-    } else if (data.data.role == "member") {
-      setSpinner(false);
-      setError("This login is only for Admin and Merchant");
     } else {
       setError("");
       setSpinner(false);
       setSuccess(data.data.success);
+      navigate("/login");
     }
   };
   return (
     <Card
-      title="Login"
+      title="Enter new password to reset password"
       bordered={true}
       style={{
         width: 500,
@@ -54,25 +50,25 @@ const Login = () => {
           maxWidth: 500,
         }}
       >
-        <Form.Item label="Email">
-          <Input name="email" onChange={handleFormData} />
-        </Form.Item>
-        <Form.Item label="Password">
-          <Input name="password" type="password" onChange={handleFormData} />
+        <Form.Item label="New Password">
+          <Input
+            name="newPassword"
+            type="password"
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
         </Form.Item>
         <Form.Item>
           {spinner ? (
             <Spin />
           ) : (
-            <Button type="primary" onClick={handleLoginSubmit}>
+            <Button type="primary" onClick={handleSubmit}>
               Submit
             </Button>
           )}
         </Form.Item>
-        <Link to="/forgotpassword">Forgot Password?</Link>
       </Form>
     </Card>
   );
 };
 
-export default Login;
+export default ResetPassword;

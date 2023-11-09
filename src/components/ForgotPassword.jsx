@@ -1,42 +1,35 @@
 import React, { useState } from "react";
 import { Alert, Button, Card, Form, Input, Spin } from "antd";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
-const Login = () => {
+const ForgotPassword = () => {
   let [error, setError] = useState("");
   let [success, setSuccess] = useState("");
   let [spinner, setSpinner] = useState(false);
-  let [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
+  let [email, setEmail] = useState("");
 
-  const handleFormData = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
-  };
-  const handleLoginSubmit = async () => {
+  const handleSubmit = async () => {
     setSpinner(true);
-    const data = await axios.post("http://localhost:8000/api/v1/auth/login", {
-      email: loginData.email,
-      password: loginData.password,
-    });
+    const data = await axios.post(
+      "http://localhost:8000/api/v1/auth/forgotpassword",
+      {
+        email: email,
+      }
+    );
     if (data.data.error) {
       setSpinner(false);
       setError(data.data.error);
       console.log(data.data.error);
-    } else if (data.data.role == "member") {
-      setSpinner(false);
-      setError("This login is only for Admin and Merchant");
     } else {
       setError("");
       setSpinner(false);
       setSuccess(data.data.success);
+      window.location.href = "https://mail.google.com/";
     }
   };
   return (
     <Card
-      title="Login"
+      title="Enter your email to reset password"
       bordered={true}
       style={{
         width: 500,
@@ -55,24 +48,20 @@ const Login = () => {
         }}
       >
         <Form.Item label="Email">
-          <Input name="email" onChange={handleFormData} />
-        </Form.Item>
-        <Form.Item label="Password">
-          <Input name="password" type="password" onChange={handleFormData} />
+          <Input name="email" onChange={(e) => setEmail(e.target.value)} />
         </Form.Item>
         <Form.Item>
           {spinner ? (
             <Spin />
           ) : (
-            <Button type="primary" onClick={handleLoginSubmit}>
+            <Button type="primary" onClick={handleSubmit}>
               Submit
             </Button>
           )}
         </Form.Item>
-        <Link to="/forgotpassword">Forgot Password?</Link>
       </Form>
     </Card>
   );
 };
 
-export default Login;
+export default ForgotPassword;
