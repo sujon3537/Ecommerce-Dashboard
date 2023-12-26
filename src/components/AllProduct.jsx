@@ -21,7 +21,6 @@ const AllProduct = () => {
       let data = await axios.get(
         "http://localhost:8000/api/v1/product/getallproduct"
       );
-      data.data;
       let arr = [];
       data.data.map((item, index) => {
         arr.push({

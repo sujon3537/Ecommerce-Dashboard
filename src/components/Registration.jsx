@@ -14,6 +14,7 @@ const Registration = () => {
     email: "",
     password: "",
     avatar: "",
+    avatarLink: "",
     facebookId: "",
     linkedinId: "",
   });
@@ -29,7 +30,8 @@ const Registration = () => {
         fullname: regData.fullname,
         email: regData.email,
         password: regData.password,
-        avatar: "",
+        avatar: fileList,
+        avatarLink: regData.avatarLink,
         facebookId: "",
         linkedinId: "",
       }
@@ -97,6 +99,9 @@ const Registration = () => {
               </div>
             </div>
           </Upload>
+        </Form.Item>
+        <Form.Item label="Or, Upload avatar via link">
+          <Input name="avatarLink" onChange={handleFormData} />
         </Form.Item>
         <Form.Item>
           {spinner ? (

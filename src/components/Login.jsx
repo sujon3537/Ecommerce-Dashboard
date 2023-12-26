@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Alert, Button, Card, Form, Input, Spin } from "antd";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loggedUser } from "../slices/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   let [error, setError] = useState("");
   let [success, setSuccess] = useState("");
   let [spinner, setSpinner] = useState(false);
@@ -11,7 +15,6 @@ const Login = () => {
     email: "",
     password: "",
   });
-
   const handleFormData = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
   };
@@ -24,7 +27,6 @@ const Login = () => {
     if (data.data.error) {
       setSpinner(false);
       setError(data.data.error);
-      console.log(data.data.error);
     } else if (data.data.role == "member") {
       setSpinner(false);
       setError("This login is only for Admin and Merchant");
@@ -32,6 +34,8 @@ const Login = () => {
       setError("");
       setSpinner(false);
       setSuccess(data.data.success);
+      dispatch(loggedUser(data.data));
+      navigate("/");
     }
   };
   return (
@@ -55,10 +59,19 @@ const Login = () => {
         }}
       >
         <Form.Item label="Email">
-          <Input name="email" onChange={handleFormData} />
+          <Input
+            name="email"
+            onChange={handleFormData}
+            value={loginData.email}
+          />
         </Form.Item>
         <Form.Item label="Password">
-          <Input name="password" type="password" onChange={handleFormData} />
+          <Input
+            name="password"
+            type="password"
+            onChange={handleFormData}
+            value={loginData.password}
+          />
         </Form.Item>
         <Form.Item>
           {spinner ? (
@@ -69,7 +82,8 @@ const Login = () => {
             </Button>
           )}
         </Form.Item>
-        <Link to="/forgotpassword">Forgot Password?</Link>
+        <Link to="/forgotpassword">Forgot Password?</Link> <br />
+        <Link to="/registration">Don't have an account? Sign up</Link>
       </Form>
     </Card>
   );
